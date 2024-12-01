@@ -1,0 +1,83 @@
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .side-nav {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .side-nav ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .side-nav li {
+    margin-bottom: 10px;
+  }
+  
+  .side-nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+  }
+  
+  .side-nav li.active a {
+    font-weight: bold;
+  }
+  
+  .dashboard-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f0f0f0;
+  }
+  
+  .stats-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .stat-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 22%;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .stat-card h2 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  
+  .stat-card p {
+    font-size: 1.2em;
+    color: #666;
+  }
+  
+  .books { background-color: #3498db; }
+  .users { background-color: #2ecc71; }
+  .returned { background-color: #f1c40f; }
+  .borrowed { background-color: #e74c3c; }
+  
+  .books, .users, .returned, .borrowed {
+    color: white;
+  }
