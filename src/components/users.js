@@ -13,7 +13,12 @@ const UsersPage = () => {
             console.error("Failed to fetch users", error);
           }
         };
-        getUsers();
+        // Check localStorage directly
+        const token = localStorage.getItem('token');
+        if(token) {
+          getUsers();
+        }
+        
       }, []);
 
       return (

@@ -22,8 +22,8 @@ const SideNavBar = () => {
         <li className={isActive('/books')}>
           <Link to="/books">Books</Link>
         </li>
-        <li className={isActive('/users')}>
-          <Link to="/users">Users</Link>
+        <li className={isActive('/users/get-all-users')}>
+          <Link to="/users/get-all-users">Users</Link>
         </li>
         <li className={isActive('/transactions')}>
           <Link to="/transactions">Transactions</Link>
