@@ -48,6 +48,21 @@ export const signup = async (credentials) => {
   }
 };
 
+export const logout = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      await api.post(`${API_URL}/auth/logout`);
+      localStorage.removeItem('token');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Still remove token from localStorage even if API call fails
+    localStorage.removeItem('token');
+    throw error;
+  }
+};
+
 // Fetch all books.
 export const fetchBooks = async () => {
   try {
