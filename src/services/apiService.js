@@ -66,7 +66,7 @@ export const logout = async () => {
 // Fetch all books.
 export const fetchBooks = async () => {
   try {
-    const response = await api.get(`/books`);
+    const response = await api.get(`/books/get-all-books`);
     return response.data;
   } catch (error) {
     console.error('Error fetching books:', error);
@@ -77,7 +77,7 @@ export const fetchBooks = async () => {
 // Add new books to the library.
 export const addBooks = async (bookData) => {
   try {
-    const response = await api.post(`/books`, bookData);
+    const response = await api.post(`/books/add-book`, bookData);
     return response.data;
   } catch (error) {
     console.log('Error while creating books:', error);
@@ -96,4 +96,31 @@ export const fetchUsers = async () => {
   }
 };
 
-// Other API functions for login, adding books, etc.
+
+// Search books by title
+export const searchBooksByTitle = async (bookName) => {
+  try {
+    const response = await api.get(`/books/search/book`, {
+      params: { name: bookName }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error searching books by title:', error);
+    throw error;
+  }
+};
+
+
+// Search books by author
+export const searchBooksByAuthor = async (authorName) => {
+  try {
+    const response = await api.get(`/books/search/author`, {
+      params: { name: authorName }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error searching books by author:', error);
+    throw error;
+  }
+};
+

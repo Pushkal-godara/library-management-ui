@@ -5,6 +5,7 @@ import UsersPage from './components/users';
 import ProtectedRoute from './components/protectedRoutes';
 import Login from './components/login';
 import Signup from './components/signup';
+import AddBookPage from './components/addNewBook';
 
 function App() {
   return (
@@ -20,6 +21,11 @@ function App() {
         <Route path="/books" element={
           <ProtectedRoute>
             <BooksPage />
+          </ProtectedRoute>
+        } />
+        <Route path='/add-book' element={
+          <ProtectedRoute>
+            <AddBookPage />
           </ProtectedRoute>
         } />
         <Route path="/users/get-all-users" element={
