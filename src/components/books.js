@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   fetchBooks,
@@ -17,7 +17,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
+  Pagination
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -32,26 +33,36 @@ const BooksPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState('title');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    getBooks();
-  }, []);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit] = useState(6);
 
   // Existing functionality remains the same
-  const getBooks = async () => {
+  const getBooks = useCallback(async () => {
     try {
-      const booksData = await fetchBooks();
-      setBooks(Array.isArray(booksData) ? booksData : []);
+      const response = await fetchBooks(currentPage, limit);
+      setBooks(Array.isArray(response.data) ? response.data : []);
+      setTotalPages(response.meta.totalPages);
       setError('');
     } catch (err) {
       console.error('Error fetching books:', err);
       setError('Error fetching books');
       setBooks([]);
     }
+  }, [currentPage, limit]); // Dependencies that affect the books fetching
+
+  useEffect(() => {
+    getBooks();
+  }, [getBooks]);
+
+  const handlePageChange = (_, newPage) => {
+    setCurrentPage(newPage);
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    setCurrentPage(1); // Reset to first page when searching
     if (!searchTerm.trim()) {
       await getBooks();
       return;
@@ -75,6 +86,7 @@ const BooksPage = () => {
   const handleSearchReset = async () => {
     setSearchTerm('');
     setError('');
+    setCurrentPage(1); // Reset to first page when resetting search
     await getBooks();
   };
 
@@ -86,7 +98,7 @@ const BooksPage = () => {
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => navigate('/add-book')}
-            sx={{ 
+            sx={{
               textTransform: 'none',
               fontWeight: 'bold',
               borderRadius: 1
@@ -137,7 +149,7 @@ const BooksPage = () => {
               type="submit"
               variant="contained"
               startIcon={<SearchIcon />}
-              sx={{ 
+              sx={{
                 textTransform: 'none',
                 borderRadius: 1
               }}
@@ -149,7 +161,7 @@ const BooksPage = () => {
               onClick={handleSearchReset}
               variant="outlined"
               startIcon={<RefreshIcon />}
-              sx={{ 
+              sx={{
                 textTransform: 'none',
                 borderRadius: 1
               }}
@@ -160,34 +172,62 @@ const BooksPage = () => {
         </Box>
 
         {books.length > 0 ? (
-          <List sx={{ bgcolor: 'background.paper' }}>
-            {books.map((book, index) => (
-              <React.Fragment key={book.id || index}>
-                <ListItem sx={{ px: 3, py: 2 }}>
-                  <ListItemText
-                    primary={
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                        {book.title}
-                      </Typography>
-                    }
-                    secondary={
-                      <>
-                        {book.Author && (
-                          <Typography component="span" variant="body2" color="text.secondary">
-                            by {book.Author.author_name}
-                          </Typography>
-                        )}
-                        <Typography variant="body2" color="text.secondary">
-                          Published: {book.publication_year}
+          <>
+            <List sx={{ bgcolor: 'background.paper' }}>
+              {books.map((book, index) => (
+                <React.Fragment key={book.id || index}>
+                  <ListItem sx={{ px: 3, py: 2, display: 'flex', gap: 2 }}>
+                    {/* Add Book Image */}
+                    <Box
+                      component="img"
+                      src={book.image_url || 'https://t3.ftcdn.net/jpg/10/12/18/72/360_F_1012187289_Hhpw6hTTl7OsSfQkztbWQ0E6EX7wmTFS.jpg'} // Fallback to a default image if no URL
+                      alt={book.title}
+                      sx={{
+                        width: 80,
+                        height: 120,
+                        objectFit: 'cover',
+                        borderRadius: 1,
+                        bgcolor: 'grey.100'
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://t3.ftcdn.net/jpg/10/12/18/72/360_F_1012187289_Hhpw6hTTl7OsSfQkztbWQ0E6EX7wmTFS.jpg'; // Fallback if image fails to load
+                      }}
+                    />
+                    <ListItemText
+                      primary={
+                        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                          {book.title}
                         </Typography>
-                      </>
-                    }
-                  />
-                </ListItem>
-                {index < books.length - 1 && <Divider />}
-              </React.Fragment>
-            ))}
-          </List>
+                      }
+                      secondary={
+                        <>
+                          {book.Author && (
+                            <Typography component="span" variant="body2" color="text.secondary">
+                              by {book.Author.author_name}
+                            </Typography>
+                          )}
+                          <Typography variant="body2" color="text.secondary">
+                            Published: {book.publication_year}
+                          </Typography>
+                        </>
+                      }
+                    />
+                  </ListItem>
+                  {index < books.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </List>
+            {/* Add Pagination component */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+                shape="rounded"
+              />
+            </Box>
+          </>
         ) : (
           <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
             No books found

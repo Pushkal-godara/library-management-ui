@@ -64,15 +64,29 @@ export const logout = async () => {
 };
 
 // Fetch all books.
-export const fetchBooks = async () => {
+export const fetchBooks = async (page = 1, limit = 6) => {
   try {
-    const response = await api.get(`/books/get-all-books`);
+    const response = await api.get(`/books/get-all-books`, {
+      params: {
+        page,
+        limit
+      } 
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching books:', error);
     throw error;
   }
 };
+// export const fetchBooks = async () => {
+//   try {
+//     const response = await api.get(`/books/get-all-books`);
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching books:', error);
+//     throw error;
+//   }
+// };
 
 // Add new books to the library.
 export const addBooks = async (bookData) => {

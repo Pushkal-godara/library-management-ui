@@ -1,7 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { fetchBooks, fetchUsers } from '../services/apiService';
 import SideNavBar from '../components/sideNavBar';
-import '../styles/dashboard.css';
+import {
+  Container,
+  Typography,
+  Box,
+  Paper,
+  Grid
+} from '@mui/material';
+import {
+  MenuBook as BookIcon,
+  People as UsersIcon,
+  AssignmentReturn as ReturnIcon,
+  BookmarkAdd as BorrowIcon
+} from '@mui/icons-material';
+
+const StatCard = ({ title, value, color, icon: Icon }) => (
+  <Paper
+    elevation={3}
+    sx={{
+      p: 3,
+      borderRadius: 4,
+      bgcolor: color,
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '200px',
+      transition: 'transform 0.2s',
+      '&:hover': {
+        transform: 'translateY(-5px)'
+      }
+    }}
+  >
+    <Typography variant="h2" component="div" sx={{ fontWeight: 'bold', mb: 2 }}>
+      {value}
+    </Typography>
+    <Typography variant="body1" sx={{ opacity: 0.9 }}>
+      {title}
+    </Typography>
+    <Icon sx={{ position: 'absolute', right: 16, top: 16, opacity: 0.3, fontSize: 40 }} />
+  </Paper>
+);
 
 const Dashboard = () => {
   const [totalBooks, setTotalBooks] = useState(0);
@@ -27,31 +68,68 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  const stats = [
+    {
+      title: 'Total Books',
+      value: totalBooks,
+      color: '#3498db', // Blue
+      icon: BookIcon
+    },
+    {
+      title: 'Total Users',
+      value: totalUsers,
+      color: '#2ecc71', // Green
+      icon: UsersIcon
+    },
+    {
+      title: 'Returned Today',
+      value: returnedToday,
+      color: '#f1c40f', // Yellow
+      icon: ReturnIcon
+    },
+    {
+      title: 'Borrowed Today',
+      value: borrowedToday,
+      color: '#e74c3c', // Red
+      icon: BorrowIcon
+    }
+  ];
+
   return (
-    <div className="dashboard-container">
+    <Box sx={{ display: 'flex' }}>
       <SideNavBar />
-      <div className="dashboard-content">
-        <h1>Dashboard</h1>
-        <div className="stats-container">
-          <div className="stat-card books">
-            <h2>{totalBooks}</h2>
-            <p>Total Books</p>
-          </div>
-          <div className="stat-card users">
-            <h2>{totalUsers}</h2>
-            <p>Total Users</p>
-          </div>
-          <div className="stat-card returned">
-            <h2>{returnedToday}</h2>
-            <p>Returned Today</p>
-          </div>
-          <div className="stat-card borrowed">
-            <h2>{borrowedToday}</h2>
-            <p>Borrowed Today</p>
-          </div>
-        </div>
-      </div>
-    </div>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 4,
+          bgcolor: '#f5f5f5',
+          minHeight: '100vh'
+        }}
+      >
+        <Container maxWidth="xl">
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              mb: 4,
+              fontWeight: 'bold',
+              color: '#2c3e50'
+            }}
+          >
+            Dashboard
+          </Typography>
+
+          <Grid container spacing={4}>
+            {stats.map((stat, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <StatCard {...stat} />
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+    </Box>
   );
 };
 
