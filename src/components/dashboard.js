@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchBooks, fetchUsers } from '../services/apiService';
+import { fetchUsers, getBookAvailabilityReport } from '../services/apiService';
 import SideNavBar from '../components/sideNavBar';
 import {
   Container,
@@ -47,19 +47,18 @@ const StatCard = ({ title, value, color, icon: Icon }) => (
 const Dashboard = () => {
   const [totalBooks, setTotalBooks] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
-  const [returnedToday, setReturnedToday] = useState(0);
-  const [borrowedToday, setBorrowedToday] = useState(0);
+  const [returned, setReturned] = useState(0);
+  const [borrowed, setBorrowed] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const booksData = await fetchBooks();
+        const booksData = await getBookAvailabilityReport();
         const usersData = await fetchUsers();
-        setTotalBooks(booksData.length);
+        setTotalBooks(booksData.data.total_books);
         setTotalUsers(usersData.length);
-        // You'll need to implement the logic for returned and borrowed books
-        setReturnedToday(1); // Placeholder
-        setBorrowedToday(3); // Placeholder
+        setReturned(booksData.data.total_available_books); 
+        setBorrowed(booksData.data.total_borrowed_books); 
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -70,7 +69,7 @@ const Dashboard = () => {
 
   const stats = [
     {
-      title: 'Total Books',
+      title: 'Total Books In Library',
       value: totalBooks,
       color: '#3498db', // Blue
       icon: BookIcon
@@ -82,14 +81,14 @@ const Dashboard = () => {
       icon: UsersIcon
     },
     {
-      title: 'Returned Today',
-      value: returnedToday,
+      title: 'Total Available Books',
+      value: returned,
       color: '#f1c40f', // Yellow
       icon: ReturnIcon
     },
     {
-      title: 'Borrowed Today',
-      value: borrowedToday,
+      title: 'Total Unavailable Books',
+      value: borrowed,
       color: '#e74c3c', // Red
       icon: BorrowIcon
     }

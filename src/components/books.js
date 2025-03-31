@@ -38,7 +38,6 @@ const BooksPage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [limit] = useState(6);
 
-  // Existing functionality remains the same
   const getBooks = useCallback(async () => {
     try {
       const response = await fetchBooks(currentPage, limit);
@@ -50,7 +49,7 @@ const BooksPage = () => {
       setError('Error fetching books');
       setBooks([]);
     }
-  }, [currentPage, limit]); // Dependencies that affect the books fetching
+  }, [currentPage, limit]); 
 
   useEffect(() => {
     getBooks();
@@ -194,24 +193,24 @@ const BooksPage = () => {
                       }}
                     />
                     <ListItemText
-                      primary={
-                        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                          {book.title}
-                        </Typography>
-                      }
-                      secondary={
-                        <>
-                          {book.Author && (
-                            <Typography component="span" variant="body2" color="text.secondary">
-                              by {book.Author.author_name}
-                            </Typography>
-                          )}
-                          <Typography variant="body2" color="text.secondary">
-                            Published: {book.publication_year}
-                          </Typography>
-                        </>
-                      }
-                    />
+                    primary={book.title}
+                    primaryTypographyProps={{
+                      variant: "subtitle1",
+                      sx: { fontWeight: 'bold' }
+                    }}
+                    secondary={
+                      <Box component="span">
+                        {book.Author && (
+                          <Box component="span" sx={{ display: 'block' }} color="text.secondary">
+                            by {book.Author.author_name}
+                          </Box>
+                        )}
+                        <Box component="span" sx={{ display: 'block' }} color="text.secondary">
+                          Published: {book.publication_year}
+                        </Box>
+                      </Box>
+                    }
+                  />
                   </ListItem>
                   {index < books.length - 1 && <Divider />}
                 </React.Fragment>

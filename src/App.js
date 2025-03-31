@@ -6,6 +6,8 @@ import ProtectedRoute from './components/protectedRoutes';
 import Login from './components/login';
 import Signup from './components/signup';
 import AddBookPage from './components/addNewBook';
+import TransactionPage from './components/transactions';
+import ReportPage from './components/reports';
 
 function App() {
   return (
@@ -31,6 +33,16 @@ function App() {
         <Route path="/users/get-all-users" element={
           <ProtectedRoute>
             <UsersPage />
+          </ProtectedRoute>
+        } />
+        <Route path='/transaction' element={
+          <ProtectedRoute>
+            <TransactionPage />
+          </ProtectedRoute>
+        } />
+        <Route path='/reports' element={
+          <ProtectedRoute>
+            <ReportPage />
           </ProtectedRoute>
         } />
       </Routes>
