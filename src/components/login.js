@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { login } from '../services/apiService';
+import { trackComponentPerformance, useTelemetry } from 'tele-track-sdk';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const { trackEvent } = useTelemetry();
 
     // Check and clear token on component mount
     useEffect(() => {
@@ -19,15 +21,26 @@ const Login = () => {
         e.preventDefault();
         setError('');
         try {
+            // Track login attempt 
+            trackEvent('login_attempt', { email, password });
+
             const response = await login({ email, password });
             // Check if response has access_token
             if (response && response.access_token) {
                 // Store token in localStorage
                 localStorage.setItem('token', response.access_token);
-                // Successfully logged in and got token
+
+                // Successfully logged in and got token, track successful login 
+                trackEvent('login_successful', { email, password });
+
                 navigate('/');
             } else {
                 setError('Login failed. No access token received.');
+                 // Track failed login
+                 trackEvent('login_failed', { 
+                    email,
+                    reason: 'No access token received'
+                  });
             }
         } catch (error) {
             if (error.response && error.response.status === 401) {
@@ -168,4 +181,10 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default trackComponentPerformance({
+    componentName: 'LoginForm',
+    slowRenderThreshold: 50,
+    trackMounts: true,
+    trackRenders: true,
+    trackUnmounts: true
+})(Login);
