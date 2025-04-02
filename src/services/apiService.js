@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { createTrackedAxios } from 'tele-track-sdk';
 
 const API_URL = 'http://localhost:1111/library-svc'; // your backend URL
 
@@ -21,6 +22,14 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+// This function should be called once when the app initializes
+export const initializeTrackedAxios = (telemetry) => {
+  if (telemetry) {
+    createTrackedAxios(api, telemetry);
+    console.log('Telemetry API tracking initialized');
+  }
+};
 
 // Login method
 export const login = async (credentials) => {
